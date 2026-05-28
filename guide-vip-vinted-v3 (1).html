@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide VIP — Vinted Market FR</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#09B1BA;--teal2:#06878e;--teal-glow:rgba(9,177,186,0.15);
+  --gold:#F0B429;--red:#E53E3E;--green:#38A169;
+  --bg:#07090d;--s1:#0d1117;--s2:#161b22;--s3:#21262d;--s4:#30363d;
+  --t1:#f0f6fc;--t2:#c9d1d9;--t3:#8b949e;--t4:#484f58;
+  --border:rgba(48,54,61,0.8);--r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--s4);border-radius:10px;}
+
+/* ===== LOCK ===== */
+#lock{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;}
+#lock::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(9,177,186,0.06) 0%,transparent 70%);}
+.lk{position:relative;width:min(400px,92vw);background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:2.5rem 2rem;text-align:center;}
+.lk::before{content:'';position:absolute;inset:0;border-radius:20px;background:linear-gradient(135deg,rgba(9,177,186,0.08) 0%,transparent 60%);pointer-events:none;}
+.lk-ico{font-size:2.8rem;display:block;margin-bottom:1.2rem;animation:lev 4s ease-in-out infinite;}
+@keyframes lev{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-6px) rotate(3deg);}}
+.lk h1{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--t1);margin-bottom:.3rem;}
+.lk p{color:var(--t3);font-size:.85rem;margin-bottom:1.8rem;line-height:1.6;}
+.lk-input{width:100%;background:var(--s2);border:1px solid var(--s4);border-radius:10px;padding:.85rem 1.2rem;color:var(--t1);font-size:1.1rem;font-family:'Syne',sans-serif;letter-spacing:.35em;text-align:center;outline:none;transition:border-color .25s,box-shadow .25s;margin-bottom:.9rem;}
+.lk-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-glow);}
+.lk-btn{width:100%;background:var(--teal);color:#000;border:none;border-radius:10px;padding:.85rem;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;letter-spacing:.03em;}
+.lk-btn:hover{background:var(--teal2);transform:translateY(-1px);}
+.lk-err{color:var(--red);font-size:.8rem;margin-top:.7rem;display:none;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%,75%{transform:translateX(-6px);}50%{transform:translateX(6px);}}
+
+/* ===== LAYOUT ===== */
+#app{display:none;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;overflow-y:auto;}
+.sl-logo{padding:1.3rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.7rem;}
+.sl-logo .brand{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;color:var(--t1);}
+.vip-pill{background:linear-gradient(135deg,var(--gold),#c87f00);color:#000;font-size:.6rem;font-weight:800;padding:.2rem .55rem;border-radius:100px;font-family:'Syne',sans-serif;letter-spacing:.05em;}
+.nav-sec{padding:.9rem 1.2rem .3rem;color:var(--t4);font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem 1rem;margin:.05rem .5rem;border-radius:8px;cursor:pointer;transition:all .18s;font-size:.82rem;color:var(--t3);user-select:none;}
+.nav-item:hover{background:var(--s2);color:var(--t2);}
+.nav-item.active{background:rgba(9,177,186,0.1);color:var(--teal);}
+.nav-item .ni{font-size:1rem;width:1.3rem;text-align:center;flex-shrink:0;}
+.nav-item .hot{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;letter-spacing:.03em;}
+.nav-item .new-tag{margin-left:auto;background:var(--green);color:#fff;font-size:.58rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;}
+.sl-foot{margin-top:auto;padding:1.1rem 1.2rem;border-top:1px solid var(--border);}
+.prog-lbl{display:flex;justify-content:space-between;font-size:.72rem;color:var(--t4);margin-bottom:.45rem;}
+.prog-track{background:var(--s3);border-radius:100px;height:4px;overflow:hidden;}
+.prog-fill{background:linear-gradient(90deg,var(--teal),var(--teal2));height:100%;border-radius:100px;transition:width .5s ease;width:0%;}
+
+/* MAIN */
+.main{margin-left:250px;min-height:100vh;}
+.topbar{position:sticky;top:0;background:rgba(7,9,13,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:.85rem 1.8rem;display:flex;align-items:center;justify-content:space-between;z-index:100;}
+.tb-left{display:flex;align-items:center;gap:.9rem;}
+.tb-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--t2);}
+.tb-right{display:flex;gap:.6rem;}
+.btn{padding:.45rem .9rem;border-radius:8px;font-size:.78rem;cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif;font-weight:500;border:1px solid var(--border);background:var(--s2);color:var(--t2);}
+.btn:hover{border-color:var(--teal);color:var(--teal);}
+.btn.prim{background:var(--teal);color:#000;border-color:var(--teal);font-weight:600;}
+.btn.prim:hover{background:var(--teal2);}
+.menu-toggle{display:none;background:none;border:none;color:var(--t2);font-size:1.2rem;cursor:pointer;padding:.3rem;}
+
+/* PAGES */
+.page{display:none;padding:2rem 1.8rem 4rem;max-width:900px;animation:fadeUp .35s ease;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* HERO */
+.hero{margin-bottom:2.5rem;}
+.hero-tag{display:inline-flex;align-items:center;gap:.4rem;background:rgba(9,177,186,0.08);border:1px solid rgba(9,177,186,0.2);color:var(--teal);font-size:.72rem;font-weight:500;padding:.3rem .8rem;border-radius:100px;margin-bottom:.9rem;letter-spacing:.02em;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:800;line-height:1.15;margin-bottom:.6rem;color:var(--t1);}
+.hero h1 em{font-style:normal;color:var(--teal);}
+.hero p{color:var(--t3);font-size:.9rem;line-height:1.75;max-width:580px;}
+.stats{display:flex;gap:1rem;margin-top:1.8rem;flex-wrap:wrap;}
+.stat{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.3rem;min-width:110px;}
+.stat-v{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--teal);}
+.stat-l{font-size:.72rem;color:var(--t3);margin-top:.15rem;}
+
+/* SECTION */
+.sec-head{margin-bottom:1.4rem;}
+.sec-head h2{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--t1);margin-bottom:.2rem;}
+.sec-head p{color:var(--t3);font-size:.82rem;}
+.divider{height:1px;background:var(--border);margin:2.2rem 0;}
+
+/* CARDS GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2rem;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem;transition:border-color .2s,transform .2s,box-shadow .2s;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);opacity:0;transition:opacity .3s;}
+.card:hover{border-color:rgba(9,177,186,0.3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.card:hover::before{opacity:1;}
+.card.gold-card{background:linear-gradient(135deg,rgba(240,180,41,0.05),transparent);border-color:rgba(240,180,41,0.15);}
+.card.gold-card:hover{border-color:rgba(240,180,41,0.4);}
+.card.red-card{background:linear-gradient(135deg,rgba(229,62,62,0.05),transparent);border-color:rgba(229,62,62,0.15);}
+.card.red-card:hover{border-color:rgba(229,62,62,0.35);}
+.card-ico{font-size:1.6rem;margin-bottom:.8rem;display:block;}
+.card-tag{font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;color:var(--teal);}
+.card.gold-card .card-tag{color:var(--gold);}
+.card.red-card .card-tag{color:var(--red);}
+.card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.5rem;color:var(--t1);line-height:1.3;}
+.card p{color:var(--t3);font-size:.82rem;line-height:1.65;margin-bottom:.5rem;}
+.tips{list-style:none;}
+.tips li{color:var(--t3);font-size:.8rem;padding:.25rem 0;display:flex;gap:.45rem;line-height:1.5;}
+.tips li::before{content:'→';color:var(--teal);flex-shrink:0;opacity:.7;}
+.card.gold-card .tips li::before{color:var(--gold);}
+.card.red-card .tips li::before{color:var(--red);}
+
+/* HOME GRID */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem;margin-bottom:2rem;}
+.hcard{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;cursor:pointer;transition:all .2s;}
+.hcard:hover{border-color:rgba(9,177,186,0.35);background:var(--s2);transform:translateY(-2px);}
+.hcard-ico{font-size:1.5rem;margin-bottom:.6rem;}
+.hcard-tag{font-size:.62rem;color:var(--teal);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.3rem;}
+.hcard h3{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;color:var(--t1);margin-bottom:.3rem;}
+.hcard p{color:var(--t3);font-size:.76rem;line-height:1.55;}
+
+/* CALCULATOR */
+.calc-wrap{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:560px){.input-row{grid-template-columns:1fr;}}
+.inp-group{display:flex;flex-direction:column;gap:.4rem;}
+.inp-group label{font-size:.75rem;color:var(--t3);font-weight:500;}
+.inp-field{background:var(--s2);border:1px solid var(--s4);border-radius:8px;padding:.7rem 1rem;color:var(--t1);font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;font-family:'Inter',sans-serif;width:100%;}
+.inp-field:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-glow);}
+.calc-btn{width:100%;background:var(--teal);color:#000;border:none;border-radius:8px;padding:.8rem;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;margin-bottom:1.2rem;}
+.calc-btn:hover{background:var(--teal2);transform:translateY(-1px);}
+.result-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;background:var(--s2);border-radius:10px;padding:1.2rem;}
+.res-item{text-align:center;}
+.res-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:.2rem;}
+.res-lbl{font-size:.7rem;color:var(--t3);}
+.advice{margin-top:.9rem;padding:.8rem 1rem;border-radius:8px;font-size:.8rem;display:none;line-height:1.6;}
+.advice.good{background:rgba(56,161,105,.08);border:1px solid rgba(56,161,105,.2);color:#68d391;}
+.advice.warn{background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.2);color:#f6c90e;}
+.advice.bad{background:rgba(229,62,62,.08);border:1px solid rgba(229,62,62,.2);color:#fc8181;}
+
+/* TABLE */
+.tbl-wrap{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem;}
+.tbl{width:100%;border-collapse:collapse;font-size:.8rem;}
+.tbl th{background:var(--s2);padding:.8rem 1.1rem;text-align:left;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--border);}
+.tbl td{padding:.8rem 1.1rem;border-bottom:1px solid rgba(48,54,61,0.5);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--s2);}
+.ptag{display:inline-flex;align-items:center;padding:.18rem .55rem;border-radius:5px;font-size:.73rem;font-weight:600;}
+.ptag.b{background:rgba(229,62,62,.12);color:#fc8181;}
+.ptag.s{background:rgba(9,177,186,.12);color:var(--teal);}
+.ptag.g{background:rgba(56,161,105,.12);color:#68d391;}
+
+/* CHECKLIST */
+.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.cl-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;}
+.cl-card h3{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem;}
+.ci{display:flex;align-items:center;gap:.7rem;padding:.45rem .3rem;border-radius:7px;cursor:pointer;transition:background .15s;user-select:none;}
+.ci:hover{background:var(--s2);}
+.cb{width:17px;height:17px;border-radius:4px;border:1.5px solid var(--s4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.65rem;}
+.ci.done .cb{background:var(--teal);border-color:var(--teal);color:#000;}
+.ci.done .ct{color:var(--t4);text-decoration:line-through;}
+.ct{font-size:.8rem;color:var(--t2);transition:color .2s;line-height:1.4;}
+.cl-prog{display:flex;align-items:center;gap:.7rem;margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--border);}
+.cl-bar{flex:1;background:var(--s3);border-radius:100px;height:4px;overflow:hidden;}
+.cl-fill{background:var(--teal);height:100%;border-radius:100px;transition:width .35s ease;}
+.cl-txt{font-size:.7rem;color:var(--t3);white-space:nowrap;}
+
+/* TIPS SLIDER */
+.slider-wrap{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1rem;}
+.slides{display:flex;transition:transform .38s cubic-bezier(.4,0,.2,1);}
+.slide{min-width:100%;padding:2rem;text-align:center;}
+.slide-num{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(9,177,186,0.1);line-height:1;margin-bottom:.3rem;}
+.slide h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:.7rem;}
+.slide p{color:var(--t3);font-size:.85rem;line-height:1.75;max-width:460px;margin:0 auto;}
+.slide-nav{display:flex;align-items:center;justify-content:center;gap:1rem;padding:.9rem;}
+.snav-btn{background:var(--s2);border:1px solid var(--border);color:var(--t2);width:32px;height:32px;border-radius:50%;cursor:pointer;transition:all .18s;font-size:.85rem;display:flex;align-items:center;justify-content:center;}
+.snav-btn:hover{border-color:var(--teal);color:var(--teal);}
+.dots{display:flex;gap:.35rem;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--s4);cursor:pointer;transition:all .2s;}
+.dot.on{background:var(--teal);width:14px;border-radius:100px;}
+
+/* INFO BOX */
+.infobox{border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;font-size:.82rem;line-height:1.65;display:flex;gap:.7rem;align-items:flex-start;}
+.infobox.teal{background:rgba(9,177,186,.07);border:1px solid rgba(9,177,186,.18);color:var(--teal);}
+.infobox.gold{background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.18);color:var(--gold);}
+.infobox.red{background:rgba(229,62,62,.07);border:1px solid rgba(229,62,62,.18);color:#fc8181;}
+.ib-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem;}
+
+/* HIGHLIGHT 2-COL */
+.hl2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+@media(max-width:560px){.hl2{grid-template-columns:1fr;}}
+.hl2-card{background:rgba(9,177,186,0.05);border:1px solid rgba(9,177,186,0.15);border-radius:var(--r);padding:1.2rem;}
+.hl2-card h3{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;color:var(--teal);margin-bottom:.8rem;}
+.hl2-list{list-style:none;}
+.hl2-list li{font-size:.8rem;color:var(--t2);padding:.25rem 0;display:flex;gap:.5rem;line-height:1.5;}
+.hl2-list li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s;}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .menu-toggle{display:block;}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;}
+  .overlay.show{display:block;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOCK -->
+<div id="lock">
+  <div class="lk">
+    <span class="lk-ico">💎</span>
+    <h1>Accès VIP requis</h1>
+    <p>Entre le code secret pour accéder au guide exclusif Vinted Market FR</p>
+    <input class="lk-input" type="password" id="codeInput" placeholder="••••••••" maxlength="12" autocomplete="off">
+    <button class="lk-btn" onclick="checkCode()">Déverrouiller →</button>
+    <p class="lk-err" id="lockErr">❌ Code incorrect, réessaie</p>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeMobile()"></div>
+
+<!-- APP -->
+<div id="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sl-logo">
+    <div>
+      <div class="brand">🛍️ Vinted Market <span class="vip-pill">VIP</span></div>
+    </div>
+  </div>
+
+  <div class="nav-sec">Chapitres</div>
+  <div class="nav-item active" onclick="go('home')"><span class="ni">🏠</span>Accueil</div>
+  <div class="nav-item" onclick="go('photos')"><span class="ni">📸</span>Photos & Annonces</div>
+  <div class="nav-item" onclick="go('prix')"><span class="ni">🏷️</span>Prix & Stratégie</div>
+  <div class="nav-item" onclick="go('resell')"><span class="ni">💰</span>Resell & Sourcing<span class="hot">HOT</span></div>
+  <div class="nav-item" onclick="go('expedition')"><span class="ni">📦</span>Expédition</div>
+  <div class="nav-item" onclick="go('reputation')"><span class="ni">⭐</span>Réputation</div>
+  <div class="nav-item" onclick="go('psycho')"><span class="ni">🧠</span>Psychologie</div>
+  <div class="nav-item" onclick="go('reseaux')"><span class="ni">📱</span>Réseaux sociaux</div>
+  <div class="nav-item" onclick="go('nego')"><span class="ni">🤝</span>Négociation</div>
+  <div class="nav-item" onclick="go('saisons')"><span class="ni">🎯</span>Saisons</div>
+  <div class="nav-item" onclick="go('finances')"><span class="ni">💳</span>Finances</div>
+  <div class="nav-item" onclick="go('arnaque')"><span class="ni">🔐</span>Arnaques</div>
+  <div class="nav-item" onclick="go('profil')"><span class="ni">👤</span>Optimiser profil<span class="new-tag">NEW</span></div>
+  <div class="nav-item" onclick="go('secrets')"><span class="ni">🕵️</span>Astuces cachées<span class="new-tag">NEW</span></div>
+  <div class="nav-item" onclick="go('pro')"><span class="ni">📈</span>Niveau Pro</div>
+
+  <div class="nav-sec">Outils</div>
+  <div class="nav-item" onclick="go('calc')"><span class="ni">🧮</span>Calculateur marge</div>
+  <div class="nav-item" onclick="go('checklist')"><span class="ni">✅</span>Check-lists</div>
+  <div class="nav-item" onclick="go('compare')"><span class="ni">📊</span>Comparateur</div>
+  <div class="nav-item" onclick="go('tips')"><span class="ni">💡</span>Tips rapides</div>
+
+  <div class="sl-foot">
+    <div class="prog-lbl"><span>Progression</span><span id="progTxt">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="tb-left">
+      <button class="menu-toggle" onclick="toggleMobile()">☰</button>
+      <span class="tb-title" id="tbTitle">Accueil</span>
+    </div>
+    <div class="tb-right">
+      <button class="btn" onclick="go('calc')">🧮 Calcul</button>
+      <button class="btn prim" onclick="go('checklist')">✅ Check-list</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="page active" id="p-home">
+    <div class="hero">
+      <div class="hero-tag">💎 Guide exclusif — 15 chapitres</div>
+      <h1>Vends comme un <em>pro</em><br>sur Vinted</h1>
+      <p>Toutes les techniques, stratégies et outils pour maximiser tes ventes et générer des revenus réguliers. Contenu exclusif VIP.</p>
+      <div class="stats">
+        <div class="stat"><div class="stat-v">15</div><div class="stat-l">Chapitres</div></div>
+        <div class="stat"><div class="stat-v">+60%</div><div class="stat-l">Ventes en plus</div></div>
+        <div class="stat"><div class="stat-v">3×</div><div class="stat-l">Marge possible</div></div>
+        <div class="stat"><div class="stat-v">4</div><div class="stat-l">Outils</div></div>
+      </div>
+    </div>
+    <div class="sec-head"><h2>Explore le guide</h2><p>Navigue via le menu ou clique sur un chapitre</p></div>
+    <div class="home-grid">
+      <div class="hcard" onclick="go('photos')"><div class="hcard-ico">📸</div><div class="hcard-tag">Ch. 1</div><h3>Photos & Annonces</h3><p>Créer des annonces qui convertissent en 3 secondes.</p></div>
+      <div class="hcard" onclick="go('prix')"><div class="hcard-ico">🏷️</div><div class="hcard-tag">Ch. 2</div><h3>Prix & Stratégie</h3><p>Fixer le bon prix et gérer les offres intelligemment.</p></div>
+      <div class="hcard" onclick="go('resell')" style="border-color:rgba(240,180,41,0.2);"><div class="hcard-ico">💰</div><div class="hcard-tag" style="color:var(--gold)">Ch. 3 — Exclusif</div><h3>Resell & Sourcing</h3><p>Acheter pour revendre avec des marges de 50 à 200%.</p></div>
+      <div class="hcard" onclick="go('expedition')"><div class="hcard-ico">📦</div><div class="hcard-tag">Ch. 4</div><h3>Expédition</h3><p>Emballer pro et fidéliser pour des avis 5 étoiles.</p></div>
+      <div class="hcard" onclick="go('psycho')"><div class="hcard-ico">🧠</div><div class="hcard-tag">Ch. 7</div><h3>Psychologie</h3><p>Comprendre les déclencheurs d'achat des clients.</p></div>
+      <div class="hcard" onclick="go('profil')" style="border-color:rgba(56,161,105,0.2);"><div class="hcard-ico">👤</div><div class="hcard-tag" style="color:var(--green)">Ch. 13 — Nouveau</div><h3>Optimiser profil</h3><p>Transformer ton profil en machine à vendre.</p></div>
+      <div class="hcard" onclick="go('secrets')" style="border-color:rgba(56,161,105,0.2);"><div class="hcard-ico">🕵️</div><div class="hcard-tag" style="color:var(--green)">Ch. 14 — Nouveau</div><h3>Astuces cachées</h3><p>Les hacks Vinted que personne ne connaît.</p></div>
+      <div class="hcard" onclick="go('calc')"><div class="hcard-ico">🧮</div><div class="hcard-tag">Outil</div><h3>Calculateur marge</h3><p>Calcule ton bénéfice net en temps réel.</p></div>
+    </div>
+  </div>
+
+  <!-- PHOTOS -->
+  <div class="page" id="p-photos">
+    <div class="hero"><div class="hero-tag">📸 Chapitre 1</div><h1>Photos & <em>Annonces</em></h1><p>80% d'une vente se joue sur la photo. Un article bien photographié se vend 3× plus vite et peut être vendu plus cher.</p></div>
+    <div class="infobox teal"><span class="ib-icon">💡</span>Les annonces avec 5+ photos génèrent 40% de ventes en plus selon les statistiques Vinted.</div>
+    <div class="grid">
+      <div class="card"><span class="card-ico">🤍</span><div class="card-tag">Setup photo</div><h3>Le fond et la lumière</h3><ul class="tips"><li>Fond blanc, mur clair ou drap propre uniquement</li><li>Lumière naturelle près d'une fenêtre, jamais de flash</li><li>Heure idéale : 10h-14h (lumière douce et uniforme)</li><li>Sol propre ou planche de bois pour un effet lifestyle</li><li>Évite les ombres dures qui font cheap</li></ul></div>
+      <div class="card"><span class="card-ico">📐</span><div class="card-tag">Photos obligatoires</div><h3>Les 5 angles essentiels</h3><ul class="tips"><li>Face à plat — photo principale (la plus importante)</li><li>Dos de l'article</li><li>Étiquette marque + taille bien visible</li><li>Détails et éventuels défauts (honnêteté rassure)</li><li>Photo portée — boost les ventes de +40%</li></ul></div>
+      <div class="card"><span class="card-ico">✏️</span><div class="card-tag">Titre & Description</div><h3>Écrire pour être trouvé</h3><ul class="tips"><li>Format : Marque + Modèle + Couleur + Taille</li><li>Ex : "Nike Air Force 1 blanc taille 42 neuf"</li><li>Répète les mots-clés dans la description</li><li>Mentionne le prix d'achat original</li><li>"Offres acceptées" attire plus d'acheteurs</li></ul></div>
+      <div class="card"><span class="card-ico">🎨</span><div class="card-tag">Retouche légère</div><h3>Améliorer sans tricher</h3><ul class="tips"><li>+10-15% de luminosité pour éclaircir</li><li>Contraste légèrement augmenté pour les couleurs</li><li>Recadre pour centrer l'article parfaitement</li><li>Apps : Lightroom Mobile, Snapseed (gratuits)</li><li>Jamais de filtre — ça fausse les couleurs réelles</li></ul></div>
+      <div class="card"><span class="card-ico">🔤</span><div class="card-tag">Mots-clés puissants</div><h3>Les termes qui font vendre</h3><ul class="tips"><li>"Porté 2 fois" — rassure sur la qualité</li><li>"Neuf avec étiquette" — justifie un prix plus élevé</li><li>"Expédition 24h" — crée un sentiment de fiabilité</li><li>"Prix ferme" ou "Offres bienvenues" — positionne clairement</li><li>Mentionner la saison : "Parfait pour l'hiver"</li></ul></div>
+      <div class="card"><span class="card-ico">🚫</span><div class="card-tag">Erreurs fréquentes</div><h3>Ce qui tue une annonce</h3><ul class="tips"><li>Photo floue ou mal éclairée = vente impossible</li><li>Fond en désordre = peu professionnel</li><li>Titre vague "T-shirt bleu" sans marque</li><li>Description vide ou copiée</li><li>Une seule photo — les acheteurs passent leur chemin</li></ul></div>
+    </div>
+  </div>
+
+  <!-- PRIX -->
+  <div class="page" id="p-prix">
+    <div class="hero"><div class="hero-tag">🏷️ Chapitre 2</div><h1>Prix & <em>Stratégie</em></h1><p>Le bon prix c'est celui qui vend vite en maximisant ton bénéfice. Ni trop haut pour ne pas bloquer, ni trop bas pour ne pas te sacrifier.</p></div>
+    <div class="grid">
+      <div class="card"><span class="card-ico">🔍</span><div class="card-tag">Recherche prix</div><h3>La méthode des 3 vérifs</h3><ul class="tips"><li>Cherche ton article sur Vinted → prix affichés</li><li>Filtre "Vendus" → vrai prix du marché réel</li><li>Prix 5-10% au-dessus pour laisser place à la négo</li><li>Si rien de similaire → sois plus créatif avec le prix</li></ul></div>
+      <div class="card"><span class="card-ico">📉</span><div class="card-tag">Fourchettes par état</div><h3>Grille de prix standard</h3><ul class="tips"><li>Neuf avec étiquette : 50-70% du prix original</li><li>Neuf sans étiquette : 40-60%</li><li>Très bon état : 30-45%</li><li>Bon état : 20-35%</li><li>Satisfaisant : 10-20% (honnêteté obligatoire)</li></ul></div>
+      <div class="card"><span class="card-ico">⏰</span><div class="card-tag">Timing de publication</div><h3>Publier au bon moment</h3><ul class="tips"><li>🔥 19h-22h en semaine — pic absolu</li><li>🔥 Samedi 9h-11h — excellent</li><li>✅ 12h-14h en semaine — correct</li><li>❌ Lundi matin — très faible</li><li>Conseil : programme tes publications à l'avance</li></ul></div>
+      <div class="card"><span class="card-ico">🔁</span><div class="card-tag">Relance hebdo</div><h3>Republier intelligemment</h3><ul class="tips"><li>Republier tout article non vendu en 7 jours</li><li>Baisser le prix de -5% lors de la republication</li><li>Changer la photo principale pour tester</li><li>"Baisser le prix" notifie les abonnés automatiquement</li><li>Un article republié remonte en haut des résultats</li></ul></div>
+      <div class="card"><span class="card-ico">📦</span><div class="card-tag">Bundles</div><h3>Vendre en lot = vendre plus</h3><ul class="tips"><li>Propose 2-3 articles similaires ensemble</li><li>Prix lot = légèrement moins cher que séparé</li><li>L'acheteur a l'impression de faire une bonne affaire</li><li>Toi tu fais plus de chiffre d'un seul coup</li><li>Idéal : vêtements enfants, basiques, accessoires</li></ul></div>
+      <div class="card"><span class="card-ico">🤝</span><div class="card-tag">Gérer les offres</div><h3>Négocier sans perdre</h3><ul class="tips"><li>Accepte les offres à -15% sans hésitation</li><li>-20% → contre-offre à -10%</li><li>Jamais de refus sec — toujours une contre-offre</li><li>Propose un bundle si l'acheteur hésite sur le prix</li><li>"Je peux faire X€ si tu prends les deux" fonctionne très bien</li></ul></div>
+    </div>
+  </div>
+
+  <!-- RESELL -->
+  <div class="page" id="p-resell">
+    <div class="hero"><div class="hero-tag">💰 Chapitre 3 — Exclusif VIP</div><h1>Resell & <em>Sourcing</em></h1><p>Le vrai secret pour gagner de l'argent en continu : trouver des articles sous-évalués et les revendre au bon prix.</p></div>
+    <div class="infobox gold"><span class="ib-icon">⚡</span>Le resell c'est 80% l'achat, 20% la vente. Celui qui achète bien gagne toujours.</div>
+    <div class="sec-head"><h2>🔍 Où sourcer</h2></div>
+    <div class="grid">
+      <div class="card gold-card"><span class="card-ico">🛍️</span><div class="card-tag">Source #1</div><h3>Vinted lui-même</h3><ul class="tips"><li>Cherche "urgent" ou "prix à débattre" dans les titres</li><li>Filtre prix bas + bon état</li><li>Surveille les nouveaux articles de vendeurs actifs</li><li>Propose des offres basses le soir (plus d'acceptations)</li><li>Alerte sur tes recherches favorites = pépites en premier</li></ul></div>
+      <div class="card gold-card"><span class="card-ico">📱</span><div class="card-tag">Source #2</div><h3>Leboncoin & Facebook</h3><ul class="tips"><li>Les gens vendent moins cher car moins d'acheteurs</li><li>Cherche les mêmes marques qu'on revend sur Vinted</li><li>Négocie systématiquement en dessous du prix affiché</li><li>L'achat en cash = meilleur levier de négociation</li><li>Proposer de venir récupérer = argument fort</li></ul></div>
+      <div class="card gold-card"><span class="card-ico">🏪</span><div class="card-tag">Source #3</div><h3>Vide-greniers</h3><ul class="tips"><li>Y aller tôt (7h-8h) pour les meilleures pièces</li><li>Focus sur les stands "vêtements adultes"</li><li>Chercher Nike, Stone Island, CP Company, Ralph Lauren</li><li>Acheter en lot = prix au kilo ultra bas</li><li>Le samedi matin = meilleur choix</li></ul></div>
+      <div class="card"><span class="card-ico">🏬</span><div class="card-tag">Source #4</div><h3>Solderies & Soldes</h3><ul class="tips"><li>Zara, H&M, Kiabi soldent à -70% en janvier et juillet</li><li>Stock-US, Action pour les lots pas chers</li><li>Vêtements neufs avec étiquette = prix de vente plus élevé</li><li>Acheter plusieurs tailles = couvre plus d'acheteurs</li></ul></div>
+    </div>
+    <div class="divider"></div>
+    <div class="sec-head"><h2>🏆 Niches les plus rentables</h2></div>
+    <div class="grid">
+      <div class="card"><span class="card-ico">👟</span><div class="card-tag">Marge 50-200%</div><h3>Sneakers premium</h3><ul class="tips"><li>Jordan 1, Nike Dunk, Adidas Samba, New Balance</li><li>Achetées 40-70€ → revendues 90-180€</li><li>Toujours en demande, rotation très rapide</li><li>Soigner les semelles pour maximiser le prix</li></ul></div>
+      <div class="card"><span class="card-ico">🧥</span><div class="card-tag">Marge 40-100%</div><h3>Vintage sportswear</h3><ul class="tips"><li>Nike, Adidas, TNF des années 90-2000</li><li>Achetés 5-15€ → revendus 30-90€</li><li>Le vintage est ultra tendance en ce moment</li><li>Trouver avant la saison froide</li></ul></div>
+      <div class="card"><span class="card-ico">👜</span><div class="card-tag">Marge 30-70%</div><h3>Sacs de marque</h3><ul class="tips"><li>Longchamp, Michael Kors, Guess, Tommy</li><li>Achetés 15-30€ → revendus 50-120€</li><li>Photos soignées = vente en moins de 48h</li><li>Toujours vérifier l'authenticité avant achat</li></ul></div>
+      <div class="card"><span class="card-ico">👶</span><div class="card-tag">Rotation ultra rapide</div><h3>Vêtements enfants</h3><ul class="tips"><li>Zara Kids, H&M Kids, Jacadi (neufs de préférence)</li><li>Marché infini — les parents cherchent en permanence</li><li>Lots de même taille = grosse valeur ajoutée</li><li>Très facile à sourcer dans les vide-greniers</li></ul></div>
+    </div>
+  </div>
+
+  <!-- EXPEDITION -->
+  <div class="page" id="p-expedition">
+    <div class="hero"><div class="hero-tag">📦 Chapitre 4</div><h1>Expédition & <em>Emballage</em></h1><p>Un bon emballage = bonne note = plus de ventes futures. C'est le dernier contact avec l'acheteur, ne le néglige pas.</p></div>
+    <div class="grid">
+      <div class="card"><span class="card-ico">📦</span><div class="card-tag">Emballage</div><h3>Emballer comme un pro</h3><ul class="tips"><li>Sac plastique à l'intérieur contre l'humidité</li><li>Papier de soie pour les articles délicats</li><li>Boîte pour les chaussures (garde la forme)</li><li>Colis adapté à la taille — pas trop grand</li><li>Scotcher solidement tous les côtés et coins</li></ul></div>
+      <div class="card"><span class="card-ico">💌</span><div class="card-tag">Le petit plus</div><h3>Le mot manuscrit</h3><p>Ce simple geste génère des avis 5⭐ de façon quasi automatique.</p><ul class="tips"><li>"Merci pour ton achat ! J'espère que tu aimeras 😊"</li><li>Prénom de l'acheteur si visible dans la commande</li><li>Un autocollant ou sticker = touche finale sympa</li><li>Ça surprend toujours et crée une relation de confiance</li></ul></div>
+      <div class="card"><span class="card-ico">🚚</span><div class="card-tag">Transporteurs</div><h3>Choisir le bon service</h3><ul class="tips"><li>Vinted Go / Mondial Relay → petits articles légers</li><li>Colissimo → articles de valeur (suivi très fiable)</li><li>Chronopost → si l'acheteur veut vite</li><li>Toujours garder le reçu de dépôt du colis</li><li>Photo du colis avant dépôt = preuve si litige</li></ul></div>
+      <div class="card"><span class="card-ico">⚡</span><div class="card-tag">Rapidité</div><h3>Expédier vite = meilleure note</h3><ul class="tips"><li>Objectif : expédier en moins de 24h</li><li>Prépare les colis à l'avance avant même la vente</li><li>Préviens l'acheteur dès que c'est expédié</li><li>Partage le numéro de suivi proactivement</li><li>Demande un avis après confirmation de réception</li></ul></div>
+    </div>
+  </div>
+
+  <!-- REPUTATION -->
+  <div class="page" id="p-reputation">
+    <div class="hero"><div class="hero-tag">⭐ Chapitre 5</div><h1>Réputation & <em>Croissance</em></h1><p>Un profil avec 20+ avis 5 étoiles vend 3× plus vite et peut fixer des prix plus élevés sans résistance.</p></div>
+    <div class="grid">
+      <div class="card"><span class="card-ico">🚀</span><div class="card-tag">Débuter</div><h3>Les 10 premiers avis</h3><ul class="tips"><li>Commence par vendre tes affaires perso</li><li>Prix attractif pour vendre vite et accumuler des avis</li><li>Demande poliment un avis à chaque acheteur</li><li>Réponds aux messages dans l'heure</li><li>Sois ultra sympa, ça se ressent et ça se dit</li></ul></div>
+      <div class="card"><span class="card-ico">👤</span><div class="card-tag">Profil</div><h3>Optimiser son profil</h3><ul class="tips"><li>Vraie photo de profil souriante</li><li>Bio complète avec ce que tu vends et tes points forts</li><li>"Expédition rapide" et "Négociation possible" dans la bio</li><li>Active toutes les notifications Vinted</li><li>Profil complet = +30% de confiance acheteur</li></ul></div>
+      <div class="card"><span class="card-ico">🎯</span><div class="card-tag">Niche</div><h3>Se spécialiser</h3><ul class="tips"><li>Choisis une catégorie et domine-la</li><li>Les acheteurs reviendront sur ton profil</li><li>Tu repères plus vite les bonnes affaires</li><li>Tu négocias mieux avec les fournisseurs connus</li><li>Ex: sneakers, vintage homme, enfants...</li></ul></div>
+      <div class="card"><span class="card-ico">📈</span><div class="card-tag">Croissance</div><h3>Passer au niveau supérieur</h3><ul class="tips"><li>50 ventes → tu peux vendre plus cher</li><li>Crée un compte TikTok pour montrer tes pièces</li><li>Partage tes articles dans ce serveur Discord</li><li>Objectif : 20-30 ventes/mois = 300-600€ nets</li></ul></div>
+    </div>
+  </div>
+
+  <!-- PSYCHO -->
+  <div class="page" id="p-psycho">
+    <div class="hero"><div class="hero-tag">🧠 Chapitre 7</div><h1>Psychologie de <em>l'acheteur</em></h1><p>Comprendre comment les acheteurs pensent te permet de doubler tes ventes sans changer tes prix.</p></div>
+    <div class="grid">
+      <div class="card gold-card"><span class="card-ico">👁️</span><div class="card-tag">Première impression</div><h3>Tu as 3 secondes</h3><ul class="tips"><li>Photo principale = seul élément visible dans la liste</li><li>Couleur vive ou fond blanc net = plus de clics</li><li>Photo portée boost les clics de +40%</li><li>Prix en .90 ou .99 (39€ > 40€ psychologiquement)</li></ul></div>
+      <div class="card gold-card"><span class="card-ico">⚡</span><div class="card-tag">Déclencheurs d'achat</div><h3>Ce qui pousse à acheter</h3><ul class="tips"><li>Urgence : "1 seul disponible" → peur de manquer</li><li>Preuve sociale : beaucoup d'avis 5⭐</li><li>Autorité : "Authentifié", "Neuf avec étiquette"</li><li>Comparaison : "Prix boutique 120€ → 45€ ici"</li><li>Rareté : "Édition limitée", "Introuvable ailleurs"</li></ul></div>
+      <div class="card"><span class="card-ico">💬</span><div class="card-tag">Mots qui vendent</div><h3>Vocabulaire vendeur</h3><ul class="tips"><li>"Superbe état" plutôt que "bon état"</li><li>"Porté 2 fois seulement" = qualité rassurée</li><li>"Expédition rapide en 24h" = sentiment de sécurité</li><li>"Offres raisonnables bienvenues" = invite à negocier</li><li>Emoji dans le titre = +15% de visibilité prouvé</li></ul></div>
+      <div class="card"><span class="card-ico">🔄</span><div class="card-tag">Récupérer un hésitant</div><h3>Relancer sans spammer</h3><ul class="tips"><li>Quelqu'un met en favori → baisse le prix de 5%</li><li>Il reçoit une notification et revient</li><li>Message poli après 3 jours si pas de réponse</li><li>"Toujours disponible si tu es encore intéressé(e) !"</li><li>Maximum une seule relance — jamais de harcèlement</li></ul></div>
+      <div class="card"><span class="card-ico">🌟</span><div class="card-tag">Confiance</div><h3>Inspirer confiance</h3><ul class="tips"><li>Profil complet avec vraie photo</li><li>Beaucoup d'avis récents (pas que vieux)</li><li>Mentionner les petits défauts = honnêteté rassurante</li><li>Proposer des photos supplémentaires proactivement</li><li>Réponse rapide = signe de sérieux</li></ul></div>
+      <div class="card"><span class="card-ico">🎯</span><div class="card-tag">Prix psychologiques</div><h3>Fixer un prix irrésistible</h3><ul class="tips"><li>Afficher l'ancien prix barré dans la description</li><li>Proposer 2 options : article seul vs bundle</li><li>Première offre haute pour laisser place à la négo</li><li>Les ronds (.00) = perçus comme inflexibles</li></ul></div>
+    </div>
+  </div>
+
+  <!-- RESEAUX -->
+  <div class="page" id="p-reseaux">
+    <div class="hero"><div class="hero-tag">📱 Chapitre 8</div><h1>Réseaux sociaux & <em>Marketing</em></h1><p>TikTok et Instagram peuvent multiplier tes ventes Vinted par 5 si tu les utilises correctement.</p></div>
+    <div class="grid">
+      <div class="card gold-card"><span class="card-ico">🎵</span><div class="card-tag">TikTok — Le plus puissant</div><h3>Exploser grâce à TikTok</h3><ul class="tips"><li>#vinted #resell #secondemain #bonneaffaire</li><li>Format viral : unboxing de tes achats</li><li>Montre le processus : achat → photo → vente</li><li>Lien profil Vinted dans ta bio</li><li>1 vidéo virale = des centaines de visiteurs</li></ul></div>
+      <div class="card"><span class="card-ico">📸</span><div class="card-tag">Instagram</div><h3>Construire une audience</h3><ul class="tips"><li>Compte dédié séparé de ton perso</li><li>Stories "nouveauté" à chaque article</li><li>Reels des meilleurs deals trouvés</li><li>#vintage #streetwear #resell #thriftshop</li><li>Lien Vinted dans la bio obligatoire</li></ul></div>
+      <div class="card"><span class="card-ico">🎬</span><div class="card-tag">Idées de vidéos</div><h3>Contenu qui marche</h3><ul class="tips"><li>"J'ai trouvé ça pour X€, je revends Y€"</li><li>"Vide-grenier haul du weekend"</li><li>"Mon setup photo Vinted à 0€"</li><li>"J'ai fait X€ ce mois sur Vinted"</li><li>"Top 5 articles les plus rentables du moment"</li></ul></div>
+      <div class="card"><span class="card-ico">💬</span><div class="card-tag">Discord</div><h3>Ce serveur = ton meilleur allié</h3><ul class="tips"><li>Partage tes articles dans #🛍️・vinted</li><li>Les membres = acheteurs potentiels directs</li><li>Échange sur les bons plans de sourcing</li><li>Construis ta réputation dans la communauté</li></ul></div>
+    </div>
+  </div>
+
+  <!-- NEGO -->
+  <div class="page" id="p-nego">
+    <div class="hero"><div class="hero-tag">🤝 Chapitre 9</div><h1>Négociation <em>avancée</em></h1><p>Les techniques des meilleurs vendeurs pour maximiser chaque transaction des deux côtés.</p></div>
+    <div class="grid">
+      <div class="card"><span class="card-ico">🎯</span><div class="card-tag">Technique #1</div><h3>Le prix ancrage</h3><ul class="tips"><li>Affiche 38€ pour un article que tu veux vendre 30€</li><li>L'acheteur propose 28€, tu acceptes à 30€</li><li>L'acheteur est content, toi aussi</li><li>L'ancrage crée une référence psychologique</li></ul></div>
+      <div class="card"><span class="card-ico">🤲</span><div class="card-tag">Technique #2</div><h3>Le give-and-take</h3><ul class="tips"><li>"Je peux faire 28€ si tu laisses un avis"</li><li>"Je fais -5€ si tu prends les deux articles"</li><li>L'acheteur se sent obligé de donner quelque chose</li><li>Très efficace pour obtenir des avis spontanés</li></ul></div>
+      <div class="card"><span class="card-ico">⏰</span><div class="card-tag">Technique #3</div><h3>La fausse urgence</h3><ul class="tips"><li>"J'ai quelqu'un d'autre intéressé ce soir"</li><li>"Je le propose encore 24h puis je le garde"</li><li>Crée une pression positive pour décider</li><li>Ne pas abuser — rester toujours crédible</li></ul></div>
+      <div class="card"><span class="card-ico">🛒</span><div class="card-tag">Côté acheteur</div><h3>Négocier quand tu achètes</h3><ul class="tips"><li>Toujours proposer -20% comme première offre</li><li>Acheter en lot = meilleur levier de négo</li><li>"Je viens chercher en main propre" = argument fort</li><li>Offrir légèrement sous ta limite réelle</li></ul></div>
+    </div>
+  </div>
+
+  <!-- SAISONS -->
+  <div class="page" id="p-saisons">
+    <div class="hero"><div class="hero-tag">🎯 Chapitre 10</div><h1>Stratégie <em>saisonnière</em></h1><p>Les meilleurs vendeurs anticipent et achètent au bon moment pour vendre au pic de la demande.</p></div>
+    <div class="grid">
+      <div class="card gold-card"><span class="card-ico">❄️</span><div class="card-tag">Automne/Hiver</div><h3>La saison la plus rentable</h3><ul class="tips"><li>Manteaux, doudounes, vestes — acheter dès septembre</li><li>Pull, sweat, hoodie en forte demande</li><li>Chaussures montantes et bottes</li><li>Noël (déc) = pic de ventes énorme</li></ul></div>
+      <div class="card gold-card"><span class="card-ico">☀️</span><div class="card-tag">Printemps/Été</div><h3>Adapte ton stock</h3><ul class="tips"><li>Robes, shorts, t-shirts, maillots de bain</li><li>Sneakers légères et sandales</li><li>Vêtements festival (juin-août) = niche rentable</li><li>Sacs de plage et accessoires été</li></ul></div>
+      <div class="card"><span class="card-ico">📅</span><div class="card-tag">Dates clés</div><h3>À ne jamais rater</h3><ul class="tips"><li>🎄 Noël : cadeaux, sneakers, vêtements</li><li>🎒 Rentrée sept : fournitures, vêtements ados</li><li>🛍️ Soldes jan/juil : sourcer au meilleur prix</li><li>🖤 Black Friday : stock pour Noël</li></ul></div>
+      <div class="card"><span class="card-ico">🏷️</span><div class="card-tag">Contre-saison</div><h3>Acheter quand personne ne veut</h3><ul class="tips"><li>Achète les manteaux en mars (prix divisés par 2)</li><li>Revends-les en octobre (tout le monde en cherche)</li><li>Même logique pour les vêtements d'été</li><li>Stocke 6 mois = marges doublées</li></ul></div>
+    </div>
+  </div>
+
+  <!-- FINANCES -->
+  <div class="page" id="p-finances">
+    <div class="hero"><div class="hero-tag">💳 Chapitre 11</div><h1>Finances & <em>Revenus</em></h1><p>Gérer tes revenus intelligemment pour maximiser les bénéfices et construire une activité durable.</p></div>
+    <div class="grid">
+      <div class="card"><span class="card-ico">📊</span><div class="card-tag">Suivi</div><h3>Tableau de bord simple</h3><ul class="tips"><li>Note : article, prix achat, prix vente, bénéfice net</li><li>Google Sheets ou carnet dédié</li><li>Total hebdo et mensuel obligatoire</li><li>Identifie quels articles rapportent le plus</li></ul></div>
+      <div class="card gold-card"><span class="card-ico">💰</span><div class="card-tag">Règle d'or</div><h3>La règle 60/30/10</h3><ul class="tips"><li>60% → réinvesti dans nouveaux articles</li><li>30% → ton revenu personnel</li><li>10% → réserve pour les bonnes occasions</li><li>Plus tu réinvestis, plus tu grandis vite</li></ul></div>
+      <div class="card"><span class="card-ico">📈</span><div class="card-tag">Paliers</div><h3>Objectifs de revenus</h3><ul class="tips"><li>Débutant : 50-100€/mois (5-10 ventes)</li><li>Intermédiaire : 200-400€/mois (20-30 ventes)</li><li>Avancé : 500-800€/mois (activité régulière)</li><li>Pro : 1000€+/mois (stock + réseaux sociaux)</li></ul></div>
+      <div class="card"><span class="card-ico">⚖️</span><div class="card-tag">Légalité</div><h3>Ce qu'il faut savoir</h3><ul class="tips"><li>Vente d'objets perso → généralement pas d'impôts</li><li>Activité régulière de revente → déclaration conseillée</li><li>+500€/mois réguliers → renseigne-toi sur l'auto-entrepreneur</li><li>Garde les reçus de tous tes achats</li></ul></div>
+    </div>
+  </div>
+
+  <!-- ARNAQUE -->
+  <div class="page" id="p-arnaque">
+    <div class="hero"><div class="hero-tag">🔐 Chapitre 12</div><h1>Éviter les <em>arnaques</em></h1><p>Les arnaques existent sur Vinted. Apprends à les reconnaître avant de te faire avoir.</p></div>
+    <div class="infobox red"><span class="ib-icon">🚨</span>Règle absolue : toujours utiliser le système de paiement Vinted intégré. Hors Vinted = aucune protection.</div>
+    <div class="grid">
+      <div class="card red-card"><span class="card-ico">🚨</span><div class="card-tag">Arnaque #1</div><h3>Paiement hors Vinted</h3><ul class="tips"><li>L'acheteur demande PayPal, virement, Lydia...</li><li>JAMAIS accepter — aucune protection possible</li><li>Si quelqu'un insiste → bloquer et signaler</li><li>Même un "ami" — toujours via Vinted</li></ul></div>
+      <div class="card red-card"><span class="card-ico">📧</span><div class="card-tag">Arnaque #2</div><h3>Faux emails Vinted</h3><ul class="tips"><li>Email "Vinted" qui demande tes infos de carte</li><li>Vinted ne demande JAMAIS ta carte par email</li><li>Vérifie l'adresse email de l'expéditeur</li><li>Doute → va directement sur vinted.fr</li></ul></div>
+      <div class="card red-card"><span class="card-ico">⚡</span><div class="card-tag">Arnaque #3</div><h3>L'acheteur pressé</h3><ul class="tips"><li>"Expédie avant que Vinted confirme le paiement"</li><li>JAMAIS expédier avant confirmation de paiement</li><li>Vinted te notifie quand c'est sécurisé</li><li>Acheteur qui rush = signal d'alarme immédiat</li></ul></div>
+      <div class="card"><span class="card-ico">✅</span><div class="card-tag">Protection vendeur</div><h3>Se protéger</h3><ul class="tips"><li>Photo du colis avant envoi obligatoire</li><li>Garde le reçu de dépôt du colis</li><li>Transporteur avec suivi uniquement</li><li>Photos + reçu = tu gagnes le litige</li></ul></div>
+    </div>
+  </div>
+
+  <!-- PROFIL (NOUVEAU) -->
+  <div class="page" id="p-profil">
+    <div class="hero"><div class="hero-tag">👤 Chapitre 13 — Nouveau</div><h1>Optimiser son <em>profil</em></h1><p>Ton profil Vinted est ta vitrine. Un profil bien optimisé génère automatiquement plus de confiance et plus de ventes.</p></div>
+    <div class="infobox teal"><span class="ib-icon">💡</span>Un profil completé à 100% vend 2× plus vite qu'un profil vide selon les études de comportement sur Vinted.</div>
+    <div class="grid">
+      <div class="card gold-card"><span class="card-ico">📸</span><div class="card-tag">Photo de profil</div><h3>L'image qui inspire confiance</h3><p>Ta photo de profil est la première chose que l'acheteur voit avant d'ouvrir une conversation.</p><ul class="tips"><li>Photo réelle de toi — jamais un logo ou un avatar</li><li>Sourire = +200% de confiance instantanée</li><li>Fond simple et clair (pas de désordre visible)</li><li>Bonne lumière sur le visage</li><li>Mise à jour si la photo date de plus d'1 an</li></ul></div>
+      <div class="card gold-card"><span class="card-ico">✍️</span><div class="card-tag">Bio optimisée</div><h3>Rédiger une bio qui vend</h3><p>Ta bio doit répondre à 3 questions : qui tu es, ce que tu vends, pourquoi acheter chez toi.</p><ul class="tips"><li>"📦 Expédition sous 24h garantie"</li><li>"💬 Réponse rapide — offres bienvenues"</li><li>"🛍️ Spécialiste sneakers / vintage / enfants"</li><li>"✅ X avis 5 étoiles — vendeur fiable depuis X"</li><li>Emoji au début de chaque ligne = plus lisible</li></ul></div>
+      <div class="card"><span class="card-ico">⭐</span><div class="card-tag">Avis & Notes</div><h3>Maximiser ses évaluations</h3><ul class="tips"><li>Demande un avis après chaque réception confirmée</li><li>Message type : "Merci ! N'hésite pas à laisser un avis si tu es satisfait(e) 😊"</li><li>Réponds à tous les avis — même positifs</li><li>Un avis négatif ? Réponds calmement et professionnellement</li><li>20+ avis récents = crédibilité maximale</li></ul></div>
+      <div class="card"><span class="card-ico">📊</span><div class="card-tag">Statistiques profil</div><h3>Les métriques à surveiller</h3><ul class="tips"><li>Taux de réponse : vise 90%+ (visible sur ton profil)</li><li>Délai moyen d'expédition : vise moins de 2 jours</li><li>Note moyenne : maintenir 5/5 absolument</li><li>Nombre de ventes affiché = preuve de sérieux</li><li>Profil "Pro" Vinted si tu dépasses les seuils</li></ul></div>
+      <div class="card"><span class="card-ico">🔗</span><div class="card-tag">Liens & Réseaux</div><h3>Connecter ses plateformes</h3><ul class="tips"><li>Lien Instagram ou TikTok dans la bio si tu en as un</li><li>Renvoie tes followers réseaux sociaux vers Vinted</li><li>Partage le lien de ton profil Vinted dans le serveur Discord</li><li>Cohérence entre tous tes profils = professionnalisme</li></ul></div>
+      <div class="card"><span class="card-ico">🎨</span><div class="card-tag">Cohérence visuelle</div><h3>Créer une identité reconnaissable</h3><ul class="tips"><li>Toujours le même style de photos (fond blanc = signature)</li><li>Même luminosité et angle sur toutes tes annonces</li><li>L'acheteur reconnaît tes annonces dans les résultats</li><li>Un "style maison" = crédibilité et confiance accrues</li><li>On te reconnaît = on revient acheter</li></ul></div>
+    </div>
+    <div class="divider"></div>
+    <div class="hl2">
+      <div class="hl2-card"><h3>✅ Checklist profil parfait</h3><ul class="hl2-list"><li>Vraie photo de profil récente</li><li>Bio complète avec ce que tu vends</li><li>Mention "Expédition rapide"</li><li>Mention "Offres bienvenues"</li><li>20+ avis 5 étoiles</li><li>Taux de réponse 90%+</li><li>Délai expédition affiché</li></ul></div>
+      <div class="hl2-card"><h3>❌ Erreurs à éviter</h3><ul class="hl2-list"><li>Avatar ou logo à la place d'une photo</li><li>Bio vide ou trop courte</li><li>Ne pas répondre aux messages</li><li>Ignorer les avis laissés</li><li>Photos de profil floues ou sombres</li><li>Informations contradictoires</li><li>Délai d'expédition trop long</li></ul></div>
+    </div>
+  </div>
+
+  <!-- SECRETS (NOUVEAU) -->
+  <div class="page" id="p-secrets">
+    <div class="hero"><div class="hero-tag">🕵️ Chapitre 14 — Nouveau</div><h1>Astuces <em>cachées</em> Vinted</h1><p>Des hacks et fonctionnalités peu connus qui te donnent un avantage sur 95% des autres vendeurs.</p></div>
+    <div class="infobox gold"><span class="ib-icon">⚡</span>Ces astuces sont peu connues — elles te donnent un avantage immédiat sur les autres vendeurs.</div>
+    <div class="grid">
+      <div class="card gold-card"><span class="card-ico">🔔</span><div class="card-tag">Hack #1</div><h3>Les alertes de recherche</h3><p>Vinted te notifie dès qu'un article correspondant à ta recherche est publié.</p><ul class="tips"><li>Active des alertes sur tes marques à sourcer</li><li>Tu reçois une notif dès qu'un article est publié</li><li>Tu es le premier à proposer une offre</li><li>Idéal pour les sneakers et pièces rares</li><li>Paramètre : Recherche → cloche en haut à droite</li></ul></div>
+      <div class="card gold-card"><span class="card-ico">📉</span><div class="card-tag">Hack #2</div><h3>La baisse de prix stratégique</h3><p>Baisser le prix de seulement 1€ déclenche une notification chez tous les favoriseurs.</p><ul class="tips"><li>Article en favori par 10 personnes → baisse de 1€</li><li>10 notifications envoyées automatiquement</li><li>Coût : 1€. Bénéfice : relance immédiate</li><li>Faire ça tous les 5-7 jours si non vendu</li><li>Plus efficace que de republier l'article</li></ul></div>
+      <div class="card gold-card"><span class="card-ico">🤫</span><div class="card-tag">Hack #3</div><h3>Voir qui a mis en favori</h3><p>Tu peux voir combien de personnes ont mis ton article en favori — utilise cette info.</p><ul class="tips"><li>Beaucoup de favoris = article attractif mais prix trop haut</li><li>Baisse légèrement le prix pour déclencher l'achat</li><li>0 favori = photo ou titre à retravailler</li><li>Tester différentes photos si pas de favoris en 3 jours</li></ul></div>
+      <div class="card"><span class="card-ico">🔍</span><div class="card-tag">Hack #4</div><h3>Analyser les vendus similaires</h3><p>Vinted affiche les articles vendus récemment — mine d'or pour le pricing.</p><ul class="tips"><li>Recherche ton article → filtre "Vendus"</li><li>Tu vois le vrai prix du marché réel (pas les espoirs)</li><li>Prix ton article dans la fourchette des 3 derniers vendus</li><li>Articles vendus rapidement = prix parfait à reproduire</li></ul></div>
+      <div class="card"><span class="card-ico">📱</span><div class="card-tag">Hack #5</div><h3>Les heures creuses pour acheter</h3><p>Les vendeurs acceptent plus facilement les offres à certaines heures.</p><ul class="tips"><li>Proposer des offres entre 21h et 23h (plus de réponses)</li><li>Le dimanche soir = vendeurs plus flexibles sur le prix</li><li>Évite les lundis et mercredis matin</li><li>Les vendeurs qui ont publié depuis plus de 14 jours = plus négociables</li></ul></div>
+      <div class="card"><span class="card-ico">💼</span><div class="card-tag">Hack #6</div><h3>Grouper plusieurs articles dans un colis</h3><p>Si un acheteur prend plusieurs articles, regroupe-les pour faire des économies de livraison.</p><ul class="tips"><li>1 colis pour 2-3 articles = frais partagés</li><li>Tu économises sur l'emballage et l'expédition</li><li>L'acheteur reçoit tout en même temps = meilleure expérience</li><li>Propose proactivement un bundle avant qu'il commande séparément</li></ul></div>
+      <div class="card"><span class="card-ico">🎁</span><div class="card-tag">Hack #7</div><h3>La boîte à dons pour sourcer</h3><p>Les associations et boîtes à dons de quartier sont des mines d'or gratuites.</p><ul class="tips"><li>Boîtes à vêtements Humana, Le Relais, Emmaüs</li><li>Articles parfois en très bon état pour presque rien</li><li>Concentre-toi sur les quartiers résidentiels aisés</li><li>Y passer régulièrement (nouvelles arrivées constantes)</li></ul></div>
+      <div class="card"><span class="card-ico">⚙️</span><div class="card-tag">Hack #8</div><h3>Optimiser l'algorithme Vinted</h3><p>Vinted favorise certains vendeurs dans ses résultats.</p><ul class="tips"><li>Répondre rapidement aux messages = meilleur classement</li><li>Expédier vite = meilleure visibilité</li><li>Beaucoup d'avis positifs = articles mieux placés</li><li>Activité régulière (connexions, publications) = boost</li><li>Compte actif quotidiennement = algorithme favorable</li></ul></div>
+    </div>
+  </div>
+
+  <!-- PRO -->
+  <div class="page" id="p-pro">
+    <div class="hero"><div class="hero-tag">📈 Chapitre 15</div><h1>Passer au <em>niveau pro</em></h1><p>De vendeur occasionnel à activité structurée qui génère des revenus réguliers et significatifs.</p></div>
+    <div class="grid">
+      <div class="card gold-card"><span class="card-ico">⚙️</span><div class="card-tag">Automatisation</div><h3>Travailler moins, vendre plus</h3><ul class="tips"><li>Prépare toujours 10+ articles en avance</li><li>Photographie en série : 1h = 15 articles</li><li>Templates de description à copier-coller</li><li>Automatise les republications le soir</li></ul></div>
+      <div class="card gold-card"><span class="card-ico">🏪</span><div class="card-tag">Multi-plateformes</div><h3>Vendre partout</h3><ul class="tips"><li>Vinted + Leboncoin + Facebook = 3× plus de chances</li><li>Depop pour le marché international</li><li>Retirer l'article partout dès qu'il est vendu</li><li>Ebay pour les articles rares et collectibles</li></ul></div>
+      <div class="card"><span class="card-ico">📦</span><div class="card-tag">Organisation</div><h3>Gérer son stock</h3><ul class="tips"><li>Espace dédié aux articles à vendre</li><li>Numérotation ou étiquetage de chaque pièce</li><li>Tableau Excel de suivi du stock</li><li>Photographier immédiatement après achat</li></ul></div>
+      <div class="card"><span class="card-ico">🏆</span><div class="card-tag">Objectif final</div><h3>Vendeur Pro Vinted officiel</h3><ul class="tips"><li>Badge Pro = confiance maximale des acheteurs</li><li>Accès aux outils statistiques avancés</li><li>Requiert : inscription comme auto-entrepreneur</li><li>Objectif si tu fais 500€+/mois régulièrement</li></ul></div>
+    </div>
+  </div>
+
+  <!-- CALC -->
+  <div class="page" id="p-calc">
+    <div class="hero"><div class="hero-tag">🧮 Outil interactif</div><h1>Calculateur de <em>marge</em></h1><p>Calcule ton bénéfice net après frais Vinted en temps réel.</p></div>
+    <div class="calc-wrap">
+      <div class="input-row">
+        <div class="inp-group"><label>💸 Prix d'achat (€)</label><input class="inp-field" type="number" id="ca" placeholder="15" min="0" oninput="calc()"></div>
+        <div class="inp-group"><label>🏷️ Prix de vente Vinted (€)</label><input class="inp-field" type="number" id="cv" placeholder="45" min="0" oninput="calc()"></div>
+        <div class="inp-group"><label>📦 Frais emballage (€)</label><input class="inp-field" type="number" id="ce" placeholder="1.50" min="0" value="1.5" oninput="calc()"></div>
+        <div class="inp-group"><label>🚚 Frais expédition à ta charge (€)</label><input class="inp-field" type="number" id="cx" placeholder="0" min="0" value="0" oninput="calc()"></div>
+      </div>
+      <div class="result-row">
+        <div class="res-item"><div class="res-val" id="rv" style="color:var(--teal)">—</div><div class="res-lbl">Frais Vinted</div></div>
+        <div class="res-item"><div class="res-val" id="rb" style="color:var(--green)">—</div><div class="res-lbl">Bénéfice net</div></div>
+        <div class="res-item"><div class="res-val" id="rm" style="color:var(--gold)">—</div><div class="res-lbl">Marge %</div></div>
+      </div>
+      <div class="advice" id="advice"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="sec-head"><h2>Exemples concrets</h2></div>
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Article</th><th>Acheté</th><th>Vendu</th><th>Frais Vinted</th><th>Gain net</th></tr></thead><tbody>
+      <tr><td>👟 Jordan 1 Mid</td><td><span class="ptag b">45€</span></td><td><span class="ptag s">95€</span></td><td>5.45€</td><td><span class="ptag g">+43€</span></td></tr>
+      <tr><td>🧥 Veste Nike vintage</td><td><span class="ptag b">8€</span></td><td><span class="ptag s">38€</span></td><td>2.60€</td><td><span class="ptag g">+26€</span></td></tr>
+      <tr><td>👜 Sac Longchamp</td><td><span class="ptag b">22€</span></td><td><span class="ptag s">60€</span></td><td>3.70€</td><td><span class="ptag g">+32€</span></td></tr>
+      <tr><td>👕 Polo Ralph Lauren</td><td><span class="ptag b">6€</span></td><td><span class="ptag s">28€</span></td><td>2.10€</td><td><span class="ptag g">+19€</span></td></tr>
+      <tr><td>👟 Adidas Samba</td><td><span class="ptag b">55€</span></td><td><span class="ptag s">115€</span></td><td>6.45€</td><td><span class="ptag g">+52€</span></td></tr>
+      <tr><td>🧣 Lot enfants ×5</td><td><span class="ptag b">12€</span></td><td><span class="ptag s">55€</span></td><td>3.45€</td><td><span class="ptag g">+38€</span></td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="page" id="p-checklist">
+    <div class="hero"><div class="hero-tag">✅ Outil interactif</div><h1>Check-lists <em>interactives</em></h1><p>Coche chaque étape — ta progression est sauvegardée automatiquement dans ton navigateur.</p></div>
+    <div class="cl-grid">
+      <div class="cl-card"><h3>📸 Avant de publier</h3><div id="cl1"></div><div class="cl-prog"><div class="cl-bar"><div class="cl-fill" id="cf1" style="width:0%"></div></div><span class="cl-txt" id="ct1">0/0</span></div></div>
+      <div class="cl-card"><h3>💰 Avant d'acheter pour revendre</h3><div id="cl2"></div><div class="cl-prog"><div class="cl-bar"><div class="cl-fill" id="cf2" style="width:0%"></div></div><span class="cl-txt" id="ct2">0/0</span></div></div>
+      <div class="cl-card"><h3>📦 Après une vente</h3><div id="cl3"></div><div class="cl-prog"><div class="cl-bar"><div class="cl-fill" id="cf3" style="width:0%"></div></div><span class="cl-txt" id="ct3">0/0</span></div></div>
+      <div class="cl-card"><h3>🔁 Routine hebdomadaire</h3><div id="cl4"></div><div class="cl-prog"><div class="cl-bar"><div class="cl-fill" id="cf4" style="width:0%"></div></div><span class="cl-txt" id="ct4">0/0</span></div></div>
+      <div class="cl-card"><h3>👤 Optimisation profil</h3><div id="cl5"></div><div class="cl-prog"><div class="cl-bar"><div class="cl-fill" id="cf5" style="width:0%"></div></div><span class="cl-txt" id="ct5">0/0</span></div></div>
+    </div>
+  </div>
+
+  <!-- COMPARE -->
+  <div class="page" id="p-compare">
+    <div class="hero"><div class="hero-tag">📊 Outil interactif</div><h1>Comparateur de <em>niches</em></h1><p>Compare la rentabilité des catégories pour choisir sur quoi concentrer ton énergie.</p></div>
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Niche</th><th>Investissement</th><th>Prix vente</th><th>Marge nette</th><th>Difficulté</th><th>Rotation</th></tr></thead><tbody>
+      <tr><td>👟 Sneakers premium</td><td><span class="ptag b">40-80€</span></td><td><span class="ptag s">90-180€</span></td><td><span class="ptag g">50-100€</span></td><td>⭐⭐⭐</td><td style="color:var(--green)">Rapide</td></tr>
+      <tr><td>🧥 Vintage sportswear</td><td><span class="ptag b">5-20€</span></td><td><span class="ptag s">30-90€</span></td><td><span class="ptag g">20-60€</span></td><td>⭐⭐</td><td style="color:var(--teal)">Moyen</td></tr>
+      <tr><td>👜 Sacs de marque</td><td><span class="ptag b">15-40€</span></td><td><span class="ptag s">50-120€</span></td><td><span class="ptag g">25-70€</span></td><td>⭐⭐</td><td style="color:var(--teal)">Moyen</td></tr>
+      <tr><td>👶 Vêtements enfants</td><td><span class="ptag b">5-15€</span></td><td><span class="ptag s">20-60€</span></td><td><span class="ptag g">10-40€</span></td><td>⭐</td><td style="color:var(--green)">Très rapide</td></tr>
+      <tr><td>👕 Polos marque</td><td><span class="ptag b">3-10€</span></td><td><span class="ptag s">18-40€</span></td><td><span class="ptag g">10-25€</span></td><td>⭐</td><td style="color:var(--green)">Rapide</td></tr>
+      <tr><td>🏋️ Sport technique</td><td><span class="ptag b">8-25€</span></td><td><span class="ptag s">30-70€</span></td><td><span class="ptag g">15-40€</span></td><td>⭐⭐</td><td style="color:var(--teal)">Moyen</td></tr>
+      <tr><td>🧣 Accessoires luxe</td><td><span class="ptag b">10-30€</span></td><td><span class="ptag s">40-150€</span></td><td><span class="ptag g">25-100€</span></td><td>⭐⭐⭐⭐</td><td style="color:var(--t3)">Lent</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="page" id="p-tips">
+    <div class="hero"><div class="hero-tag">💡 Tips rapides</div><h1>Conseils <em>express</em></h1><p>Des astuces applicables immédiatement, format court et percutant.</p></div>
+    <div class="slider-wrap">
+      <div class="slides" id="slides">
+        <div class="slide"><div class="slide-num">01</div><h3>La règle des 5 photos</h3><p>N'est pas vendu ce qui n'est pas bien montré. Minimum 5 photos : face, dos, étiquette, détail, porté. Les annonces avec 5+ photos se vendent 40% plus vite.</p></div>
+        <div class="slide"><div class="slide-num">02</div><h3>Publier entre 19h et 22h</h3><p>C'est le pic d'activité absolu sur Vinted. Publie tes articles à ce moment-là pour maximiser la visibilité auprès du plus grand nombre d'acheteurs actifs.</p></div>
+        <div class="slide"><div class="slide-num">03</div><h3>Le prix magique = arrondi moins 1€</h3><p>19€ se vend mieux que 20€. 49€ se vend mieux que 50€. Ce simple détail psychologique peut doubler ton taux de conversion sur certains articles.</p></div>
+        <div class="slide"><div class="slide-num">04</div><h3>Jamais de refus — toujours une contre-offre</h3><p>Un refus ferme la porte définitivement. Une contre-offre maintient le dialogue. "Je ne peux pas faire 20€ mais je fais 25€" garde l'acheteur dans la conversation.</p></div>
+        <div class="slide"><div class="slide-num">05</div><h3>Le mot manuscrit dans le colis</h3><p>"Merci pour ton achat ! 😊" écrit à la main génère des avis 5⭐ de façon quasi automatique. Les gens adorent ce geste et le mentionnent dans leur évaluation.</p></div>
+        <div class="slide"><div class="slide-num">06</div><h3>Republier tous les 7 jours</h3><p>Un article non vendu en 7 jours remonte en haut des résultats quand tu le republies. Baisse aussi le prix de 5% pour déclencher une notification aux favoriseurs.</p></div>
+        <div class="slide"><div class="slide-num">07</div><h3>Chercher "urgent" sur Vinted</h3><p>Les vendeurs pressés acceptent des offres bien en dessous du prix affiché. C'est souvent là que tu trouves tes meilleures affaires à sourcer et revendre.</p></div>
+        <div class="slide"><div class="slide-num">08</div><h3>Baisser de 1€ = notification gratuite</h3><p>Baisser ton prix de seulement 1€ envoie automatiquement une notification à tous ceux qui ont mis ton article en favori. C'est la relance la plus efficace qui soit.</p></div>
+        <div class="slide"><div class="slide-num">09</div><h3>Photo portée = +40% de clics</h3><p>Les acheteurs veulent se projeter. Une photo portée (sur toi ou un mannequin) génère significativement plus de clics et de ventes que les photos à plat seules.</p></div>
+        <div class="slide"><div class="slide-num">10</div><h3>Activer les alertes de recherche</h3><p>Configure des alertes sur tes marques favorites. Vinted te notifie dès qu'un article correspondant est publié — tu es le premier à proposer une offre sur les pépites.</p></div>
+      </div>
+    </div>
+    <div class="slide-nav">
+      <button class="snav-btn" onclick="slide(-1)">←</button>
+      <div class="dots" id="dots"></div>
+      <button class="snav-btn" onclick="slide(1)">→</button>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+const CODE = 'VINTED2024';
+const PAGES = {home:'Accueil',photos:'Photos & Annonces',prix:'Prix & Stratégie',resell:'Resell & Sourcing',expedition:'Expédition',reputation:'Réputation',psycho:'Psychologie',reseaux:'Réseaux sociaux',nego:'Négociation',saisons:'Saisons',finances:'Finances',arnaque:'Arnaques',profil:'Optimiser profil',secrets:'Astuces cachées',pro:'Niveau Pro',calc:'Calculateur',checklist:'Check-lists',compare:'Comparateur',tips:'Tips rapides'};
+let visited = new Set(['home']);
+
+// LOCK
+document.getElementById('codeInput').addEventListener('keypress', e => { if(e.key==='Enter') checkCode(); });
+function checkCode(){
+  const v = document.getElementById('codeInput').value.trim().toUpperCase();
+  const err = document.getElementById('lockErr');
+  if(v === CODE){
+    const l = document.getElementById('lock');
+    l.style.transition='all .45s ease';l.style.opacity='0';l.style.transform='scale(1.04)';
+    setTimeout(()=>{ l.style.display='none'; document.getElementById('app').style.display='block'; init(); },450);
+  } else {
+    err.style.display='block'; err.style.animation='none';
+    setTimeout(()=>{ err.style.animation='shake .3s ease'; },10);
+    document.getElementById('codeInput').value='';
+  }
+}
+
+// NAV
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const page = document.getElementById('p-'+id);
+  if(!page) return;
+  page.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{ if(n.getAttribute('onclick')?.includes("'"+id+"'")) n.classList.add('active'); });
+  document.getElementById('tbTitle').textContent = PAGES[id] || '';
+  visited.add(id);
+  updateProg();
+  closeMobile();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateProg(){
+  const pct = Math.round((visited.size/Object.keys(PAGES).length)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progTxt').textContent=pct+'%';
+}
+function toggleMobile(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
+function closeMobile(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+
+// CALC
+function calc(){
+  const a=parseFloat(document.getElementById('ca').value)||0;
+  const v=parseFloat(document.getElementById('cv').value)||0;
+  const e=parseFloat(document.getElementById('ce').value)||0;
+  const x=parseFloat(document.getElementById('cx').value)||0;
+  if(!a||!v){['rv','rb','rm'].forEach(id=>document.getElementById(id).textContent="—");document.getElementById('advice').style.display='none';return;}
+  const fv=(v*0.05)+0.70;
+  const b=v-fv-a-e-x;
+  const m=(b/a*100);
+  document.getElementById('rv').textContent=fv.toFixed(2)+'€';
+  document.getElementById('rb').textContent=(b>=0?'+':'')+b.toFixed(2)+'€';
+  document.getElementById('rb').style.color=b>=0?'var(--green)':'var(--red)';
+  document.getElementById('rm').textContent=m.toFixed(0)+'%';
+  const adv=document.getElementById('advice');
+  adv.style.display='block';
+  adv.className='advice';
+  if(b<0){adv.classList.add('bad');adv.textContent=`❌ Tu perdrais de l'argent. Augmente le prix de vente ou négocie mieux à l'achat.`;}
+  else if(b<8){adv.classList.add('warn');adv.textContent="⚠️ Marge trop faible. Vise minimum 8-10€ de bénéfice net par article.";}
+  else{adv.classList.add('good');adv.textContent="✅ Bonne marge ! "+b.toFixed(2)+'€ net — soit '+m.toFixed(0)+'% de rentabilité. '+(b>=30?'🔥 Excellente affaire !':'Continue comme ça !');}
+}
+
+// CHECKLISTS
+const CL = {
+  cl1:[`Minimum 5 photos claires sur fond blanc`,`Bonne lumière naturelle utilisée`,`Photo de l'étiquette marque + taille`,`Titre : Marque + Modèle + Couleur + Taille`,`Description complète avec état réel`,`Prix comparé aux articles similaires vendus`,`Photo portée si possible`,`Publié entre 19h et 22h`],
+  cl2:[`Vérifié les prix Vendus sur Vinted`,`Calculé la marge nette avec le calculateur`,`Vérifié état réel article en détail`,`Négocié prix d'achat au maximum`,`Confirmé l'authenticité si marque premium`,`Prévu emballage et frais d'expédition`,`Marge nette supérieure à 8€`],
+  cl3:[`Emballage propre et solide`,`Sac plastique contre l'humidité`,`Petit mot manuscrit inclus`,`Scotch sur tous les côtés`,`Colis déposé dans les 24-48h`,`Numéro de suivi partagé à l'acheteur`,`Avis demandé poliment après réception`],
+  cl4:[`Republier tous articles non vendus +7j`,`Baisser prix de 5% sur articles bloqués`,`Répondre à toutes les offres en attente`,`Chercher 2-3 nouvelles pièces à sourcer`,`Photographier les nouveaux articles`,`Vérifier les statistiques du profil`,`Vérifier les notes et avis reçus`],
+  cl5:[`Vraie photo de profil récente`,`Bio complète avec ce que tu vends`,`Mention expédition rapide dans la bio`,`Mention offres bienvenues`,`Taux de réponse 90%+ maintenu`,`Photos cohérentes sur toutes les annonces`,`Lien réseaux sociaux dans la bio`]
+};
+function buildCL(){
+  Object.entries(CL).forEach(([id,items],i)=>{
+    const num=i+1;
+    const saved=JSON.parse(localStorage.getItem('cl_'+id)||'{}');
+    const c=document.getElementById(id);
+    c.innerHTML='';
+    items.forEach((txt,j)=>{
+      const div=document.createElement('div');
+      div.className='ci'+(saved[j]?' done':'');
+      div.innerHTML=`<div class="cb">${saved[j]?'✓':''}</div><span class="ct">${txt}</span>`;
+      div.onclick=()=>{
+        div.classList.toggle('done');
+        const done=div.classList.contains('done');
+        div.querySelector('.cb').textContent=done?'✓':'';
+        const s=JSON.parse(localStorage.getItem('cl_'+id)||'{}');
+        s[j]=done; localStorage.setItem('cl_'+id,JSON.stringify(s));
+        updCL(id,num);
+      };
+      c.appendChild(div);
+    });
+    updCL(id,num);
+  });
+}
+function updCL(id,num){
+  const all=document.querySelectorAll('#'+id+' .ci');
+  const done=document.querySelectorAll('#'+id+' .ci.done').length;
+  const pct=all.length?(done/all.length*100):0;
+  document.getElementById('cf'+num).style.width=pct+'%';
+  document.getElementById('ct'+num).textContent=done+'/'+all.length;
+}
+
+// SLIDER
+let cur=0; const TOT=10;
+function initSlider(){
+  const d=document.getElementById('dots');
+  for(let i=0;i<TOT;i++){
+    const dot=document.createElement('div');
+    dot.className='dot'+(i===0?' on':'');
+    dot.onclick=()=>goSlide(i);
+    d.appendChild(dot);
+  }
+  setInterval(()=>goSlide(cur+1),7000);
+}
+function goSlide(n){
+  cur=(n+TOT)%TOT;
+  document.getElementById('slides').style.transform=`translateX(-${cur*100}%)`;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===cur));
+}
+function slide(d){ goSlide(cur+d); }
+
+function init(){ buildCL(); initSlider(); updateProg(); }
+</script>
+</body>
+</html>
